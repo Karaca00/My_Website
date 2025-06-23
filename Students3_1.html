@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ห้องเรียน 3/1 - รายละเอียดและค่าห้องนักเรียน</title>
+    <title>ห้องเรียน 3/1 - รายละเอียดและคะแนนนักเรียน</title>
     <style>
         /* CSS สำหรับจัดรูปแบบทั่วไปของหน้าเว็บ */
         body {
@@ -63,36 +63,6 @@
             color: #3498db; /* สีฟ้าอ่อนเมื่อโฮเวอร์ */
             border-bottom: 2px solid #3498db;
         }
-
-        /* สไตล์สำหรับข้อมูลผู้ใช้ที่เข้าสู่ระบบและปุ่มออกจากระบบ */
-        .user-status {
-            color: #ecf0f1;
-            font-size: 0.9em;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .logout-btn {
-            background-color: #e74c3c; /* สีแดง */
-            color: white;
-            padding: 5px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
-
-
-        /* สไตล์สำหรับฟอร์ม Login/Signup - Removed in this version */
-
 
         /* สไตล์สำหรับคอนเทนเนอร์ของปุ่มสลับตาราง */
         .toggle-buttons {
@@ -333,15 +303,6 @@
             background-color: #5a6268;
         }
 
-        /* สไตล์สำหรับข้อความสถานะ (โหลด/บันทึก) */
-        #statusMessage {
-            text-align: center;
-            margin-top: 20px;
-            color: #007bff;
-            font-weight: bold;
-            display: none; /* ซ่อนไว้ตอนแรก */
-        }
-
 
         /* Responsive adjustments for smaller screens */
         @media (max-width: 768px) {
@@ -404,68 +365,63 @@
         <p>โรงเรียนแห่งความรู้ คู่คุณธรรม</p>
         <nav>
             <ul>
-                <li><a href="#home">หน้าหลัก</a></li>
-                <li><a href="#class-data">ข้อมูลระดับชั้น</a></li>
+                <li><a href="index.html">หน้าหลัก</a></li>
+                <li><a href="Class.html">ข้อมูลระดับชั้น</a></li>
                 <li><a href="#about">เกี่ยวกับโรงเรียน</a></li>
                 <li><a href="#contact">ติดต่อเรา</a></li>
             </ul>
         </nav>
-        <!-- User status display is now integrated for a cleaner look or removed if not needed -->
     </header>
 
-    <!-- Main Content Container (Always visible now) -->
-    <div id="mainContent">
-        <div class="toggle-buttons">
-            <button id="showStudentListBtn" class="toggle-btn active">รายชื่อของนักเรียน</button>
-            <button id="showStudentScoresBtn" class="toggle-btn">ค่าห้องของนักเรียน</button>
-        </div>
+    <div class="toggle-buttons">
+        <button id="showStudentListBtn" class="toggle-btn active">รายชื่อของนักเรียน</button>
+        <button id="showStudentScoresBtn" class="toggle-btn">ค่าห้องของนักเรียน</button>
+    </div>
 
-        <div id="studentListTableContainer" class="table-container">
-            <h2>รายชื่อนักเรียน ห้อง 3/1</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>เลขที่</th>
-                        <th>รหัสนักเรียน</th>
-                        <th>ชื่อ - นามสกุล</th>
-                        <th>สถานะ</th>
-                        <th>รายละเอียด</th>
-                    </tr>
-                </thead>
-                <tbody id="studentListTableBody">
-                    <!-- Student data will be populated by JavaScript -->
-                </tbody>
-            </table>
-        </div>
+    <div id="studentListTableContainer" class="table-container">
+        <h2>รายชื่อนักเรียน ห้อง 3/1</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>เลขที่</th>
+                    <th>รหัสนักเรียน</th>
+                    <th>ชื่อ - นามสกุล</th>
+                    <th>สถานะ</th>
+                    <th>รายละเอียด</th>
+                </tr>
+            </thead>
+            <tbody id="studentListTableBody">
+                <!-- Student data will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
 
-        <div id="scoreTableContainer" class="table-container" style="display:none;">
-            <h2>ค่าห้องของนักเรียน ห้อง 3/1</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>เลขที่</th>
-                        <th>รหัสนักเรียน</th>
-                        <th>ชื่อ - นามสกุล</th>
-                        <th>พฤษภาคม</th>
-                        <th>มิถุนายน</th>
-                        <th>กรกฎาคม</th>
-                        <th>สิงหาคม</th>
-                        <th>กันยายน</th>
-                        <th>ตุลาคม</th>
-                        <th>พฤศจิกายน</th>
-                        <th>ธันวาคม</th>
-                        <th>มกราคม</th>
-                        <th>กุมภาพันธ์</th>
-                        <th>มีนาคม</th>
-                        <th>รวม</th>
-                    </tr>
-                </thead>
-                <tbody id="scoreTableBody">
-                    <!-- Score data will be populated by JavaScript -->
-                </tbody>
-            </table>
-            <div id="statusMessage"></div>
-        </div>
+    <div id="scoreTableContainer" class="table-container" style="display:none;">
+        <h2>ค่าห้องของนักเรียน ห้อง 3/1</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>เลขที่</th>
+                    <th>รหัสนักเรียน</th>
+                    <th>ชื่อ - นามสกุล</th>
+                    <th>พฤษภาคม</th>
+                    <th>มิถุนายน</th>
+                    <th>กรกฎาคม</th>
+                    <th>สิงหาคม</th>
+                    <th>กันยายน</th>
+                    <th>ตุลาคม</th>
+                    <th>พฤศจิกายน</th>
+                    <th>ธันวาคม</th>
+                    <th>มกราคม</th>
+                    <th>กุมภาพันธ์</th>
+                    <th>มีนาคม</th>
+                    <th>รวม</th>
+                </tr>
+            </thead>
+            <tbody id="scoreTableBody">
+                <!-- Score data will be populated by JavaScript -->
+            </tbody>
+        </table>
     </div>
 
     <!-- Modal Structure -->
@@ -543,40 +499,7 @@
     </div>
 
     <script type="module">
-        // Firebase Imports
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Firebase Configuration (provided by Canvas environment)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Global variable for admin save password
-        const ADMIN_SAVE_PASSWORD = "123456"; // Password for saving scores in the modal
-
-        // Helper to get element by ID
-        const getById = (id) => document.getElementById(id);
-
-        // UI Elements
-        const studentListTableBody = getById('studentListTableBody');
-        const scoreTableBody = getById('scoreTableBody');
-        const showStudentListBtn = getById('showStudentListBtn');
-        const showStudentScoresBtn = getById('showStudentScoresBtn');
-        const modalOverlay = getById('studentDetailModal');
-        const closeButton = modalOverlay.querySelector('.close-button');
-        const saveScoresBtn = getById('saveScoresBtn');
-        const cancelScoresBtn = getById('cancelScoresBtn');
-        const currentDateTimeSpan = getById('currentDateTime');
-        const adminPasswordInput = getById('adminPasswordInput');
-        const passwordErrorMessage = getById('passwordErrorMessage');
-        const statusMessageElement = getById('statusMessage');
-
-
-        // Student Data (Static for this demo, usually fetched from DB)
+        // ข้อมูลนักเรียนสำหรับห้อง 3/1
         const studentsData = [
             { id: "15446", name: "กฤติพงศ์ นามบุตร", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "หัวหน้าห้อง", dob: "06 สิงหาคม 2553", phone: "063-071-0560" },
             { id: "15447", name: "ธนาศักดิ์ คนหมั้น", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "26 มกราคม 2554", phone: "082-345-6789" },
@@ -610,129 +533,121 @@
             { id: "ST030", name: "นักเรียน 30", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" }
         ];
 
-        const studentMonthlyScores = {}; // Global object to hold scores, will be populated from Firestore
+        // ข้อมูลคะแนนนักเรียนสำหรับห้อง 3/1 (ปรับปรุงให้เป็นรายเดือน) - จะถูก Overwrite ด้วยข้อมูลจาก localStorage
+        const studentScores = {};
         const months = ["พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม", "มกราคม", "กุมภาพันธ์", "มีนาคม"];
-        
-        // Populate scoreInputElements map dynamically
-        const monthPrefixMap = {
-            "พฤษภาคม": "May", "มิถุนายน": "Jun", "กรกฎาคม": "Jul",
-            "สิงหาคม": "Aug", "กันยายน": "Sep", "ตุลาคม": "Oct",
-            "พฤศจิกายน": "Nov", "ธันวาคม": "Dec", "มกราคม": "Jan",
-            "กุมภาพันธ์": "Feb", "มีนาคม": "Mar"
-        };
-        const scoreInputElements = {}; // Declare the object here
+
+        // Initialize scores: May = 25, others = 0 for all students (fallback if no local storage data)
+        function initializeDefaultScores() {
+            studentsData.forEach(student => {
+                studentScores[student.id] = {};
+                months.forEach(month => {
+                    studentScores[student.id][month] = (month === "พฤษภาคม") ? 25 : 0;
+                });
+            });
+        }
+
+        // Function to load scores from localStorage
+        function loadScoresFromLocalStorage() {
+            const storedScores = localStorage.getItem('studentMonthlyScores_room3_1');
+            if (storedScores) {
+                try {
+                    const parsedScores = JSON.parse(storedScores);
+                    // Merge stored scores with default/current structure
+                    studentsData.forEach(student => {
+                        if (parsedScores[student.id]) {
+                            studentScores[student.id] = parsedScores[student.id];
+                        } else {
+                            // If a student doesn't have stored data, apply default
+                            studentScores[student.id] = {};
+                            months.forEach(month => {
+                                studentScores[student.id][month] = (month === "พฤษภาคม") ? 25 : 0;
+                            });
+                        }
+                    });
+                    console.log("Scores loaded from localStorage.");
+                } catch (e) {
+                    console.error("Error parsing scores from localStorage:", e);
+                    initializeDefaultScores(); // Fallback to default if parsing fails
+                }
+            } else {
+                initializeDefaultScores(); // Initialize with defaults if nothing in localStorage
+                console.log("No scores found in localStorage, initialized with default values.");
+            }
+        }
+
+        // Call load scores at the beginning
+        loadScoresFromLocalStorage();
+
+
+        // รับอ้างอิงถึงองค์ประกอบ Modal และปุ่มต่างๆ
+        const modalOverlay = document.getElementById('studentDetailModal');
+        const closeButton = document.querySelector('.close-button');
+
+        // รับอ้างอิงถึงส่วนที่จะแสดงข้อมูลใน Modal
+        const modalStudentName = document.getElementById('modalStudentName');
+        const modalStudentId = document.getElementById('modalStudentId');
+        const modalStudentGrade = document.getElementById('modalStudentGrade');
+        const modalStudentClass = document.getElementById('modalStudentClass');
+        const modalStudentStatus = document.getElementById('modalStudentStatus');
+        const modalStudentDob = document.getElementById('modalStudentDob');
+        const modalStudentPhone = document.getElementById('modalStudentPhone');
+
+        // รับอ้างอิงถึง input fields ของคะแนนใน Modal
+        const scoreInputFields = {};
         months.forEach(month => {
+            // Mapping Thai month names to English prefixes for input IDs
+            const monthPrefixMap = {
+                "พฤษภาคม": "May", "มิถุนายน": "Jun", "กรกฎาคม": "Jul",
+                "สิงหาคม": "Aug", "กันยายน": "Sep", "ตุลาคม": "Oct",
+                "พฤศจิกายน": "Nov", "ธันวาคม": "Dec", "มกราคม": "Jan",
+                "กุมภาพันธ์": "Feb", "มีนาคม": "Mar"
+            };
             const englishPrefix = monthPrefixMap[month];
-            scoreInputElements[month] = getById(`score${englishPrefix}`);
+            scoreInputFields[month] = document.getElementById(`score${englishPrefix}`);
         });
 
-        // Function to load scores from Firestore
-        async function loadScoresFromFirestore() {
-            const allScores = {};
-            for (const student of studentsData) {
-                if (!db) {
-                    console.error("Firestore not initialized, cannot fetch scores.");
-                    break;
-                }
-                // Firestore path: artifacts/{appId}/public/data/studentMonthlyScores/{student.id}
-                const scoreDocRef = doc(db, `artifacts/${appId}/public/data/studentMonthlyScores`, student.id);
-                try {
-                    const docSnap = await getDoc(scoreDocRef);
-                    if (docSnap.exists()) {
-                        allScores[student.id] = docSnap.data();
-                    } else {
-                        // If no data in Firestore, initialize with default values (May = 25, others = 0)
-                        allScores[student.id] = {};
-                        months.forEach(month => {
-                            allScores[student.id][month] = (month === "พฤษภาคม") ? 25 : 0;
-                        });
-                    }
-                } catch (error) {
-                    console.error(`Error fetching scores for ${student.id} from Firestore:`, error);
-                    // Fallback to default if there's an error fetching a specific student's score
-                    allScores[student.id] = {};
-                    months.forEach(month => {
-                        allScores[student.id][month] = (month === "พฤษภาคม") ? 25 : 0;
-                    });
-                }
-            }
-            Object.assign(studentMonthlyScores, allScores); // Update global object
-        }
+        const saveScoresBtn = document.getElementById('saveScoresBtn');
+        const cancelScoresBtn = document.getElementById('cancelScoresBtn');
+        const currentDateTimeSpan = document.getElementById('currentDateTime'); // รับอ้างอิงถึง span สำหรับวันที่/เวลา
+        
+        // Elements for password verification
+        const adminPasswordInput = document.getElementById('adminPasswordInput');
+        const passwordErrorMessage = document.getElementById('passwordErrorMessage');
+        const ADMIN_PASSWORD = "301"; // Define the admin password
 
 
-        // Function to save monthly scores to Firestore with password validation
-        async function saveMonthlyScores() {
-            // Check the entered password for saving
-            const enteredPassword = adminPasswordInput.value;
-            if (enteredPassword !== ADMIN_SAVE_PASSWORD) {
-                passwordErrorMessage.textContent = "รหัสผ่านที่ใช้บันทึกข้อมูลไม่ถูกต้อง! โปรดลองอีกครั้ง";
-                return; // Stop the save process
-            } else {
-                passwordErrorMessage.textContent = ""; // Clear error if password is correct
-            }
+        // รับอ้างอิงถึงองค์ประกอบตารางและปุ่มสลับ
+        const studentListTableContainer = document.getElementById('studentListTableContainer');
+        const scoreTableContainer = document.getElementById('scoreTableContainer');
+        const studentListTableBody = document.getElementById('studentListTableBody');
+        const scoreTableBody = document.getElementById('scoreTableBody');
+        const showStudentListBtn = document.getElementById('showStudentListBtn');
+        const showStudentScoresBtn = document.getElementById('showStudentScoresBtn');
 
-            const studentIdToSave = modalOverlay.dataset.currentStudentId;
-            if (!studentIdToSave || !studentMonthlyScores[studentIdToSave]) {
-                console.error("No student ID found for saving scores or student data missing.");
-                return;
-            }
-
-            statusMessageElement.textContent = "กำลังบันทึกข้อมูล...";
-            statusMessageElement.style.display = 'block';
-            statusMessageElement.style.color = '#007bff';
-
-            const currentStudentScores = studentMonthlyScores[studentIdToSave];
-            const updatedScores = {}; // Object to store scores to save to Firestore
-            months.forEach(month => {
-                const inputElement = scoreInputElements[month];
-                if (inputElement) {
-                    const scoreValue = parseInt(inputElement.value) || 0;
-                    currentStudentScores[month] = scoreValue; // Update local data
-                    updatedScores[month] = scoreValue; // Add to object for Firestore
-                }
-            });
-
-            try {
-                // Save to Firestore
-                const scoreDocRef = doc(db, `artifacts/${appId}/public/data/studentMonthlyScores`, studentIdToSave);
-                await setDoc(scoreDocRef, updatedScores);
-                console.log(`Scores for ${studentIdToSave} saved to Firestore.`);
-
-                await renderStudentScores(); // Re-render the score table to show updated scores (will fetch from Firestore)
-                closeModal(); // Close the modal after saving
-                statusMessageElement.textContent = "บันทึกข้อมูลสำเร็จ!";
-                statusMessageElement.style.color = 'green';
-                setTimeout(() => statusMessageElement.style.display = 'none', 3000); // Hide after 3 seconds
-            } catch (error) {
-                console.error("Error saving scores to Firestore:", error);
-                statusMessageElement.textContent = "เกิดข้อผิดพลาดในการบันทึกข้อมูลค่าห้อง";
-                statusMessageElement.style.color = 'red';
-                setTimeout(() => statusMessageElement.style.display = 'none', 5000); // Hide after 5 seconds
-            }
-        }
-
-
-        // Function to open student detail modal
+        // ฟังก์ชันสำหรับเปิด Modal
         function openModal(studentId) {
-            const student = studentsData.find(s => s.id === studentId); // Find student data
+            const student = studentsData.find(s => s.id === studentId); // ค้นหานักเรียนจาก array
             if (student) {
-                // Populate student details in modal
-                getById('modalStudentName').textContent = `ข้อมูลนักเรียน: ${student.name}`;
-                getById('modalStudentId').textContent = student.id;
-                getById('modalStudentGrade').textContent = student.grade;
-                getById('modalStudentClass').textContent = student.class;
-                getById('modalStudentStatus').textContent = student.status;
-                getById('modalStudentDob').textContent = student.dob;
-                getById('modalStudentPhone').textContent = student.phone;
+                // Populate student details
+                modalStudentName.textContent = `ข้อมูลนักเรียน: ${student.name}`;
+                modalStudentId.textContent = student.id;
+                modalStudentGrade.textContent = student.grade;
+                modalStudentClass.textContent = student.class;
+                modalStudentStatus.textContent = student.status;
+                modalStudentDob.textContent = student.dob;
+                modalStudentPhone.textContent = student.phone;
 
                 // Populate monthly scores in modal input fields
-                const scores = studentMonthlyScores[student.id] || {};
-                months.forEach(monthKey => {
-                    const inputElement = scoreInputElements[monthKey];
-                    if (inputElement) {
-                        inputElement.value = scores[monthKey];
-                    }
-                });
+                const scores = studentScores[studentId]; // Get current scores (from localStorage)
+                if (scores) {
+                    months.forEach(monthKey => {
+                        const inputElement = scoreInputFields[monthKey];
+                        if (inputElement) {
+                            inputElement.value = scores[monthKey];
+                        }
+                    });
+                }
 
                 // Display current date and time
                 const now = new Date();
@@ -742,29 +657,62 @@
                 adminPasswordInput.value = '';
                 passwordErrorMessage.textContent = '';
 
-                modalOverlay.dataset.currentStudentId = studentId; // Store current student ID for saving
+                modalOverlay.dataset.currentStudentId = studentId; // Store current student ID in modal for saving
                 modalOverlay.style.display = 'flex';
             } else {
                 console.error('Student data not found for ID:', studentId);
-                // Optionally, display a message to the user that data is not available
-                getById('modalStudentName').textContent = `ข้อมูลนักเรียน: ไม่พบข้อมูล`;
-                getById('modalStudentId').textContent = studentId;
-                getById('modalStudentGrade').textContent = "-";
-                getById('modalStudentClass').textContent = "-";
-                getById('modalStudentStatus').textContent = "-";
-                getById('modalStudentDob').textContent = "-";
-                getById('modalStudentPhone').textContent = "-";
+                modalStudentName.textContent = `ข้อมูลนักเรียน: ไม่พบข้อมูล`;
+                modalStudentId.textContent = studentId;
+                modalStudentGrade.textContent = "-";
+                modalStudentClass.textContent = "-";
+                modalStudentStatus.textContent = "-";
+                modalStudentDob.textContent = "-";
+                modalStudentPhone.textContent = "-";
                 modalOverlay.style.display = 'flex';
             }
         }
 
-        // Function to close modal
+        // ฟังก์ชันสำหรับปิด Modal
         function closeModal() {
-            modalOverlay.style.display = 'none'; // Hide Modal
+            modalOverlay.style.display = 'none';
             delete modalOverlay.dataset.currentStudentId; // Clear stored student ID
         }
 
-        // Function to create and display student list table
+        // ฟังก์ชันสำหรับบันทึกคะแนนรายเดือนลง Local Storage
+        function saveMonthlyScores() {
+            const enteredPassword = adminPasswordInput.value;
+            if (enteredPassword !== ADMIN_PASSWORD) {
+                passwordErrorMessage.textContent = "รหัสผ่านไม่ถูกต้อง! โปรดลองอีกครั้ง";
+                return; // Stop the save process
+            } else {
+                passwordErrorMessage.textContent = ""; // Clear error if password is correct
+            }
+
+            const studentIdToSave = modalOverlay.dataset.currentStudentId;
+            if (!studentIdToSave || !studentScores[studentIdToSave]) {
+                console.error("No student ID found for saving scores or student data missing.");
+                return;
+            }
+
+            const currentStudentScores = studentScores[studentIdToSave];
+            months.forEach(month => {
+                const inputElement = scoreInputFields[month];
+                if (inputElement) {
+                    const scoreValue = parseInt(inputElement.value) || 0;
+                    currentStudentScores[month] = scoreValue; // Update local data
+                }
+            });
+
+            // Save the entire studentScores object to localStorage
+            localStorage.setItem('studentMonthlyScores_room3_1', JSON.stringify(studentScores));
+            console.log(`Scores for ${studentIdToSave} saved to localStorage.`);
+
+            renderStudentScores(); // Re-render the score table to show updated scores
+            closeModal(); // Close the modal after saving
+        }
+
+
+        // ฟังก์ชันสำหรับสร้างและแสดงตารางรายชื่อนักเรียน
         function renderStudentList() {
             studentListTableBody.innerHTML = ''; // Clear old data
             let rowNum = 1;
@@ -781,26 +729,22 @@
             // Re-attach Event Listeners for "ดูรายละเอียด" buttons after re-rendering
             document.querySelectorAll('#studentListTableBody .details-btn').forEach(button => {
                 button.addEventListener('click', (event) => {
-                    const studentId = event.target.dataset.studentId; // Get data-student-id value
+                    const studentId = event.target.dataset.studentId;
                     openModal(studentId);
                 });
             });
         }
 
-        // Function to create and display student scores table
-        async function renderStudentScores() {
+        // ฟังก์ชันสำหรับสร้างและแสดงตารางคะแนนนักเรียน
+        function renderStudentScores() {
             scoreTableBody.innerHTML = ''; // Clear old data
-            statusMessageElement.textContent = "กำลังดึงข้อมูลค่าห้อง...";
-            statusMessageElement.style.display = 'block';
-            statusMessageElement.style.color = '#007bff';
 
-            await loadScoresFromFirestore(); // Ensure latest scores are fetched
-
-            statusMessageElement.style.display = 'none'; // Hide loading message
+            // Load latest scores from localStorage before rendering
+            loadScoresFromLocalStorage();
 
             let rowNum = 1;
             studentsData.forEach(student => {
-                const scores = studentMonthlyScores[student.id] || {}; // Use updated global data
+                const scores = studentScores[student.id] || {}; // Use updated local data
                 let totalScore = 0;
                 months.forEach(month => {
                     totalScore += (scores[month] || 0);
@@ -827,44 +771,44 @@
             });
         }
 
-        // Function to toggle table display
+        // ฟังก์ชันสำหรับสลับการแสดงผลตาราง
         function displayTable(tableType) {
-            const studentListTableContainer = getById('studentListTableContainer');
-            const scoreTableContainer = getById('scoreTableContainer');
-
             if (tableType === 'list') {
                 studentListTableContainer.style.display = 'block';
                 scoreTableContainer.style.display = 'none';
                 showStudentListBtn.classList.add('active');
                 showStudentScoresBtn.classList.remove('active');
-                renderStudentList();
+                renderStudentList(); // Render student list table
             } else if (tableType === 'score') {
-                studentListTableContainer.style.display = 'none';
-                scoreTableContainer.style.display = 'block';
+                studentListTableContainer.style.display = 'none'; // Hide student list
+                scoreTableContainer.style.display = 'block'; // Show score table
                 showStudentListBtn.classList.remove('active');
                 showStudentScoresBtn.classList.add('active');
-                renderStudentScores();
+                renderStudentScores(); // Render student scores table (will load from localStorage)
             }
         }
 
-        // --- Event Listeners ---
-        showStudentListBtn.addEventListener('click', () => displayTable('list'));
-        showStudentScoresBtn.addEventListener('click', () => displayTable('score'));
-
-        closeButton.addEventListener('click', closeModal);
-        cancelScoresBtn.addEventListener('click', closeModal);
-        saveScoresBtn.addEventListener('click', saveMonthlyScores);
-
-        // Close Modal when clicking outside
-        window.addEventListener('click', (event) => {
-            if (event.target === modalOverlay) {
-                closeModal();
-            }
-        });
-
-        // Initial render when DOM is fully loaded
+        // เมื่อหน้าเว็บโหลดเสร็จ
         document.addEventListener('DOMContentLoaded', () => {
-            displayTable('list'); // Show student list by default
+            displayTable('list'); // แสดงตารางรายชื่อนักเรียนเป็นค่าเริ่มต้น
+
+            // เพิ่ม Event Listener ให้กับปุ่มสลับตาราง
+            showStudentListBtn.addEventListener('click', () => displayTable('list'));
+            showStudentScoresBtn.addEventListener('click', () => displayTable('score'));
+
+            // เพิ่ม Event Listener ให้กับปุ่มปิด Modal
+            closeButton.addEventListener('click', closeModal);
+            cancelScoresBtn.addEventListener('click', closeModal); // ปุ่มยกเลิกก็ปิด Modal
+
+            // เพิ่ม Event Listener ให้กับปุ่มบันทึกคะแนนใน Modal
+            saveScoresBtn.addEventListener('click', saveMonthlyScores);
+
+            // ปิด Modal เมื่อคลิกนอก Modal (บนพื้นหลังทึบแสง)
+            window.addEventListener('click', (event) => {
+                if (event.target == modalOverlay) {
+                    closeModal();
+                }
+            });
         });
     </script>
 </body>
