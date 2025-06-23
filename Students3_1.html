@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ห้องเรียน 3/1 - คำชะอีวิทยาคาร</title>
+    <title>ห้องเรียน 3/1 - รายละเอียดและคะแนนนักเรียน</title>
     <style>
         /* CSS สำหรับจัดรูปแบบทั่วไปของหน้าเว็บ */
         body {
@@ -64,41 +64,50 @@
             border-bottom: 2px solid #3498db;
         }
 
-        /* สไตล์สำหรับส่วนบทนำของหน้าหลัก */
-        .introduction-section {
-            width: 90%;
-            max-width: 900px;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            text-align: center;
+        /* สไตล์สำหรับคอนเทนเนอร์ของปุ่มสลับตาราง */
+        .toggle-buttons {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px; /* ระยะห่างระหว่างปุ่ม */
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .introduction-section h2 {
-            color: #2c3e50;
-            font-size: 2em;
-            margin-top: 0;
+        .toggle-btn {
+            background-color: #607d8b; /* สีเทาอมฟ้า */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.1s ease;
         }
 
-        .introduction-section p {
-            font-size: 1.1em;
-            color: #555;
+        .toggle-btn:hover {
+            background-color: #455a64; /* สีเข้มขึ้นเมื่อโฮเวอร์ */
         }
+
+        .toggle-btn.active {
+            background-color: #007bff; /* สีน้ำเงินสำหรับปุ่มที่เลือกอยู่ */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px); /* ยกขึ้นเล็กน้อย */
+        }
+
 
         /* สไตล์สำหรับคอนเทนเนอร์ของตาราง */
         .table-container {
             width: 90%;
-            max-width: 1000px; /* เพิ่มความกว้างสูงสุดของตารางเล็กน้อย */
+            max-width: 1000px;
             background-color: #fff;
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             overflow-x: auto; /* ทำให้ตารางมีแถบเลื่อนแนวนอนถ้าข้อมูลเยอะเกินไป */
+            margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่าง */
         }
 
-        /* สไตล์สำหรับตารางนักเรียน */
+        /* สไตล์สำหรับตาราง */
         table {
             width: 100%;
             border-collapse: collapse; /* รวมเส้นขอบของเซลล์เข้าด้วยกัน */
@@ -168,7 +177,7 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             width: 90%;
-            max-width: 500px;
+            max-width: 600px; /* เพิ่มความกว้าง modal เพื่อรองรับช่องคะแนน */
             position: relative;
             animation: fadeIn 0.3s ease-out; /* แอนิเมชันตอนเปิด */
         }
@@ -211,6 +220,90 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* สไตล์สำหรับส่วนแก้ไขคะแนนใน Modal */
+        .score-editing-section {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc; /* เส้นแบ่ง */
+        }
+
+        .score-editing-section h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            display: flex; /* ใช้ flexbox เพื่อจัดวางวันที่/เวลา */
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* ระยะห่างระหว่างข้อความกับวันที่ */
+        }
+        .score-editing-section h4 span {
+            font-weight: normal; /* ทำให้วันที่/เวลาไม่เป็นตัวหนาเท่าหัวข้อ */
+        }
+
+        .score-input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* ปรับคอลัมน์ให้ยืดหยุ่น */
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .score-input-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* ชิดซ้าย */
+        }
+
+        .score-input-item label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .score-input-item input[type="number"],
+        .score-input-item input[type="password"] { /* เพิ่มสไตล์สำหรับ input password */
+            width: calc(100% - 16px); /* หัก padding */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center; /* จัดตัวเลขอยู่ตรงกลาง */
+        }
+
+        .score-modal-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .score-modal-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .score-modal-actions .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .score-modal-actions .save-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .score-modal-actions .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .score-modal-actions .cancel-btn:hover {
+            background-color: #5a6268;
+        }
+
+
         /* Responsive adjustments for smaller screens */
         @media (max-width: 768px) {
             header h1 {
@@ -222,16 +315,6 @@
             nav ul li a {
                 font-size: 1em;
             }
-            .introduction-section {
-                padding: 20px;
-                width: 95%;
-            }
-            .introduction-section h2 {
-                font-size: 1.8em;
-            }
-            .introduction-section p {
-                font-size: 1em;
-            }
             .table-container {
                 width: 95%; /* ใช้ความกว้างมากขึ้นบนหน้าจอเล็ก */
                 padding: 15px;
@@ -240,7 +323,7 @@
                 padding: 8px 10px; /* ลด padding ลง */
                 font-size: 0.9em; /* ลดขนาดตัวอักษร */
             }
-            .details-btn {
+            .details-btn, .toggle-btn {
                 padding: 5px 10px;
                 font-size: 0.8em;
             }
@@ -253,6 +336,10 @@
                 top: 10px;
                 right: 15px;
             }
+            .score-input-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* ปรับคอลัมน์ใน modal เล็กน้อย */
+                gap: 10px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -263,15 +350,6 @@
                 margin: 0 5px;
             }
             nav ul li a {
-                font-size: 0.9em;
-            }
-            .introduction-section {
-                padding: 15px;
-            }
-            .introduction-section h2 {
-                font-size: 1.5em;
-            }
-            .introduction-section p {
                 font-size: 0.9em;
             }
             .table-container {
@@ -288,298 +366,60 @@
         <nav>
             <ul>
                 <li><a href="index.html">หน้าหลัก</a></li>
-                <li><a href="Class.html">ข้อมูลห้องเรียน</a></li>
+                <li><a href="Class.html">ข้อมูลระดับชั้น</a></li>
                 <li><a href="#about">เกี่ยวกับโรงเรียน</a></li>
                 <li><a href="#contact">ติดต่อเรา</a></li>
             </ul>
         </nav>
     </header>
 
-    <div class="table-container">
-        <h2>รายชื่อนักเรียน</h2>
+    <div class="toggle-buttons">
+        <button id="showStudentListBtn" class="toggle-btn active">รายชื่อของนักเรียน</button>
+        <button id="showStudentScoresBtn" class="toggle-btn">ค่าห้องของนักเรียน</button>
+    </div>
+
+    <div id="studentListTableContainer" class="table-container">
+        <h2>รายชื่อนักเรียน ห้อง 3/1</h2>
         <table>
             <thead>
                 <tr>
                     <th>เลขที่</th>
                     <th>รหัสนักเรียน</th>
                     <th>ชื่อ - นามสกุล</th>
-                    <th>ชั้นปี</th>
-                    <th>ห้องเรียน</th>
                     <th>สถานะ</th>
                     <th>รายละเอียด</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr data-student-id="15446">
-                    <td>1</td>
-                    <td>15446</td>
-                    <td>กฤติพงศ์ นามบุตร</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>หัวหน้าห้อง</td>
-                    <td><button class="details-btn" data-student-id="15446">ดูรายละเอียด</button></td>
+            <tbody id="studentListTableBody">
+                <!-- Student data will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <div id="scoreTableContainer" class="table-container" style="display:none;">
+        <h2>ค่าห้องของนักเรียน ห้อง 3/1</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>เลขที่</th>
+                    <th>รหัสนักเรียน</th>
+                    <th>ชื่อ - นามสกุล</th>
+                    <th>พฤษภาคม</th>
+                    <th>มิถุนายน</th>
+                    <th>กรกฎาคม</th>
+                    <th>สิงหาคม</th>
+                    <th>กันยายน</th>
+                    <th>ตุลาคม</th>
+                    <th>พฤศจิกายน</th>
+                    <th>ธันวาคม</th>
+                    <th>มกราคม</th>
+                    <th>กุมภาพันธ์</th>
+                    <th>มีนาคม</th>
+                    <th>รวม</th>
                 </tr>
-                <tr data-student-id="15447">
-                    <td>2</td>
-                    <td>15447</td>
-                    <td>ธนาศักดิ์ คนหมั้น</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="15447">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="15449">
-                    <td>3</td>
-                    <td>15449</td>
-                    <td>ปิยวัฒน์ คนเพียร</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="15449">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST004">
-                    <td>4</td>
-                    <td>ST004</td>
-                    <td>นักเรียน 4</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST004">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST005">
-                    <td>5</td>
-                    <td>ST005</td>
-                    <td>นักเรียน 5</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST005">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST006">
-                    <td>6</td>
-                    <td>ST006</td>
-                    <td>นักเรียน 6</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST006">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST007">
-                    <td>7</td>
-                    <td>ST007</td>
-                    <td>นักเรียน 7</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST007">ดูรายละเอียด</button></td>
-                </tr>
-                 <tr data-student-id="ST008">
-                    <td>8</td>
-                    <td>ST008</td>
-                    <td>นักเรียน 8</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST008">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST009">
-                    <td>9</td>
-                    <td>ST009</td>
-                    <td>นักเรียน 9</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST009">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST010">
-                    <td>10</td>
-                    <td>ST010</td>
-                    <td>นักเรียน 10</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST010">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST011">
-                    <td>11</td>
-                    <td>ST011</td>
-                    <td>นักเรียน 11</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST011">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST012">
-                    <td>12</td>
-                    <td>ST012</td>
-                    <td>นักเรียน 12</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST012">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST013">
-                    <td>13</td>
-                    <td>ST013</td>
-                    <td>นักเรียน 13</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST013">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST014">
-                    <td>14</td>
-                    <td>ST014</td>
-                    <td>นักเรียน 14</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST014">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST015">
-                    <td>15</td>
-                    <td>ST015</td>
-                    <td>นักเรียน 15</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST015">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST016">
-                    <td>16</td>
-                    <td>ST016</td>
-                    <td>นักเรียน 16</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST016">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST017">
-                    <td>17</td>
-                    <td>ST017</td>
-                    <td>นักเรียน 17</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST017">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST018">
-                    <td>18</td>
-                    <td>ST018</td>
-                    <td>นักเรียน 18</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST018">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST019">
-                    <td>19</td>
-                    <td>ST019</td>
-                    <td>นักเรียน 19</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST019">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST020">
-                    <td>20</td>
-                    <td>ST020</td>
-                    <td>นักเรียน 20</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST020">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST021">
-                    <td>21</td>
-                    <td>ST021</td>
-                    <td>นักเรียน 21</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST021">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST022">
-                    <td>22</td>
-                    <td>ST022</td>
-                    <td>นักเรียน 22</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST022">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST023">
-                    <td>23</td>
-                    <td>ST023</td>
-                    <td>นักเรียน 23</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST023">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST024">
-                    <td>24</td>
-                    <td>ST024</td>
-                    <td>นักเรียน 24</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST024">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST025">
-                    <td>25</td>
-                    <td>ST025</td>
-                    <td>นักเรียน 25</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST025">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST026">
-                    <td>26</td>
-                    <td>ST026</td>
-                    <td>นักเรียน 26</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST026">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST027">
-                    <td>27</td>
-                    <td>ST027</td>
-                    <td>นักเรียน 27</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST027">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST028">
-                    <td>28</td>
-                    <td>ST028</td>
-                    <td>นักเรียน 28</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST028">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST029">
-                    <td>29</td>
-                    <td>ST029</td>
-                    <td>นักเรียน 29</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST029">ดูรายละเอียด</button></td>
-                </tr>
-                <tr data-student-id="ST030">
-                    <td>30</td>
-                    <td>ST030</td>
-                    <td>นักเรียน 30</td>
-                    <td>มัธยมศึกษาปีที่ 3</td>
-                    <td>3/1</td>
-                    <td>นักเรียน</td>
-                    <td><button class="details-btn" data-student-id="ST030">ดูรายละเอียด</button></td>
-                </tr>
+            </thead>
+            <tbody id="scoreTableBody">
+                <!-- Score data will be populated by JavaScript -->
             </tbody>
         </table>
     </div>
@@ -595,258 +435,154 @@
             <p><strong>สถานะ:</strong> <span id="modalStudentStatus"></span></p>
             <p><strong>วันเกิด:</strong> <span id="modalStudentDob"></span></p>
             <p><strong>เบอร์โทรศัพท์:</strong> <span id="modalStudentPhone"></span></p>
+
+            <!-- Score Editing Section in Modal -->
+            <div class="score-editing-section">
+                <h4>แก้ไขค่าห้องรายเดือนของนักเรียน <span id="currentDateTime" style="font-size: 0.8em; color: #777;"></span></h4>
+                <div class="score-input-grid">
+                    <div class="score-input-item">
+                        <label for="scoreMay">พฤษภาคม</label>
+                        <input type="number" id="scoreMay" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreJun">มิถุนายน</label>
+                        <input type="number" id="scoreJun" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreJul">กรกฎาคม</label>
+                        <input type="number" id="scoreJul" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreAug">สิงหาคม</label>
+                        <input type="number" id="scoreAug" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreSep">กันยายน</label>
+                        <input type="number" id="scoreSep" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreOct">ตุลาคม</label>
+                        <input type="number" id="scoreOct" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreNov">พฤศจิกายน</label>
+                        <input type="number" id="scoreNov" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreDec">ธันวาคม</label>
+                        <input type="number" id="scoreDec" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreJan">มกราคม</label>
+                        <input type="number" id="scoreJan" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreFeb">กุมภาพันธ์</label>
+                        <input type="number" id="scoreFeb" min="0" max="100">
+                    </div>
+                    <div class="score-input-item">
+                        <label for="scoreMar">มีนาคม</label>
+                        <input type="number" id="scoreMar" min="0" max="100">
+                    </div>
+                </div>
+                <div class="password-verification" style="margin-top: 20px;">
+                    <label for="adminPasswordInput" style="font-weight: bold; color: #333;">รหัสผ่านแอดมิน:</label>
+                    <input type="password" id="adminPasswordInput" placeholder="กรอกรหัสผ่านเพื่อบันทึก">
+                    <p id="passwordErrorMessage" style="color: red; text-align: center; margin-top: 10px;"></p>
+                </div>
+                <div class="score-modal-actions">
+                    <button class="save-btn" id="saveScoresBtn">บันทึกคะแนน</button>
+                    <button class="cancel-btn" id="cancelScoresBtn">ยกเลิก</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        // ข้อมูลนักเรียนเพิ่มเติม
-        const studentDetails = {
-            "15446": {
-                name: "กฤติพงศ์ นามบุตร",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "หัวหน้าห้อง",
-                dob: "06 สิงหาคม 2553",
-                phone: "063-071-0560",
-            },
-            "15447": {
-                name: "ธนาศักดิ์ คนหมั้น",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "26 มกราคม 2554",
-                phone: "082-345-6789",
-            },
-            "15449": {
-                name: "ปิยวัฒน์ คนเพียร",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "16 มิถุนายน 2553",
-                phone: "083-456-7890",
-            },
-            "ST004": {
-                name: "นักเรียน 4",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST005": {
-                name: "นักเรียน 5",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST006": {
-                name: "นักเรียน 6",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST007": {
-                name: "นักเรียน 7",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST008": {
-                name: "นักเรียน 8",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST009": {
-                name: "นักเรียน 9",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST010": {
-                name: "นักเรียน 10",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST011": {
-                name: "นักเรียน 11",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST012": {
-                name: "นักเรียน 12",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST013": {
-                name: "นักเรียน 13",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST014": {
-                name: "นักเรียน 14",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST015": {
-                name: "นักเรียน 15",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST016": {
-                name: "นักเรียน 16",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST017": {
-                name: "นักเรียน 17",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST018": {
-                name: "นักเรียน 18",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST019": {
-                name: "นักเรียน 19",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST020": {
-                name: "นักเรียน 20",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST021": {
-                name: "นักเรียน 21",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST022": {
-                name: "นักเรียน 22",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST023": {
-                name: "นักเรียน 23",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST024": {
-                name: "นักเรียน 24",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST025": {
-                name: "นักเรียน 25",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST026": {
-                name: "นักเรียน 26",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST027": {
-                name: "นักเรียน 27",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST028": {
-                name: "นักเรียน 28",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST029": {
-                name: "นักเรียน 29",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
-            },
-            "ST030": {
-                name: "นักเรียน 30",
-                grade: "มัธยมศึกษาปีที่ 3",
-                class: "3/1",
-                status: "นักเรียน",
-                dob: "-",
-                phone: "-",
+    <script type="module">
+        // ข้อมูลนักเรียนสำหรับห้อง 3/1
+        const studentsData = [
+            { id: "15446", name: "กฤติพงศ์ นามบุตร", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "หัวหน้าห้อง", dob: "06 สิงหาคม 2553", phone: "063-071-0560" },
+            { id: "15447", name: "ธนาศักดิ์ คนหมั้น", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "26 มกราคม 2554", phone: "082-345-6789" },
+            { id: "15449", name: "ปิยวัฒน์ คนเพียร", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "16 มิถุนายน 2553", phone: "083-456-7890" },
+            { id: "ST004", name: "นักเรียน 4", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST005", name: "นักเรียน 5", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST006", name: "นักเรียน 6", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST007", name: "นักเรียน 7", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST008", name: "นักเรียน 8", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST009", name: "นักเรียน 9", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST010", name: "นักเรียน 10", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST011", name: "นักเรียน 11", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST012", name: "นักเรียน 12", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST013", name: "นักเรียน 13", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST014", name: "นักเรียน 14", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST015", name: "นักเรียน 15", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST016", name: "นักเรียน 16", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST017", name: "นักเรียน 17", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST018", name: "นักเรียน 18", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST019", name: "นักเรียน 19", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST020", name: "นักเรียน 20", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST021", name: "นักเรียน 21", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST022", name: "นักเรียน 22", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST023", name: "นักเรียน 23", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST024", name: "นักเรียน 24", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST025", name: "นักเรียน 25", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST026", name: "นักเรียน 26", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST027", name: "นักเรียน 27", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST028", name: "นักเรียน 28", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST029", name: "นักเรียน 29", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" },
+            { id: "ST030", name: "นักเรียน 30", grade: "มัธยมศึกษาปีที่ 3", class: "3/1", status: "นักเรียน", dob: "-", phone: "-" }
+        ];
+
+        // ข้อมูลคะแนนนักเรียนสำหรับห้อง 3/1 (ปรับปรุงให้เป็นรายเดือน) - จะถูก Overwrite ด้วยข้อมูลจาก localStorage
+        const studentScores = {};
+        const months = ["พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม", "มกราคม", "กุมภาพันธ์", "มีนาคม"];
+
+        // Initialize scores: May = 25, others = 0 for all students (fallback if no local storage data)
+        function initializeDefaultScores() {
+            studentsData.forEach(student => {
+                studentScores[student.id] = {};
+                months.forEach(month => {
+                    studentScores[student.id][month] = (month === "พฤษภาคม") ? 25 : 0;
+                });
+            });
+        }
+
+        // Function to load scores from localStorage
+        function loadScoresFromLocalStorage() {
+            const storedScores = localStorage.getItem('studentMonthlyScores_room3_1');
+            if (storedScores) {
+                try {
+                    const parsedScores = JSON.parse(storedScores);
+                    // Merge stored scores with default/current structure
+                    studentsData.forEach(student => {
+                        if (parsedScores[student.id]) {
+                            studentScores[student.id] = parsedScores[student.id];
+                        } else {
+                            // If a student doesn't have stored data, apply default
+                            studentScores[student.id] = {};
+                            months.forEach(month => {
+                                studentScores[student.id][month] = (month === "พฤษภาคม") ? 25 : 0;
+                            });
+                        }
+                    });
+                    console.log("Scores loaded from localStorage.");
+                } catch (e) {
+                    console.error("Error parsing scores from localStorage:", e);
+                    initializeDefaultScores(); // Fallback to default if parsing fails
+                }
+            } else {
+                initializeDefaultScores(); // Initialize with defaults if nothing in localStorage
+                console.log("No scores found in localStorage, initialized with default values.");
             }
-        };
+        }
+
+        // Call load scores at the beginning
+        loadScoresFromLocalStorage();
+
 
         // รับอ้างอิงถึงองค์ประกอบ Modal และปุ่มต่างๆ
         const modalOverlay = document.getElementById('studentDetailModal');
         const closeButton = document.querySelector('.close-button');
-        const detailButtons = document.querySelectorAll('.details-btn'); // เลือกปุ่มทั้งหมดที่มี class 'details-btn'
 
         // รับอ้างอิงถึงส่วนที่จะแสดงข้อมูลใน Modal
         const modalStudentName = document.getElementById('modalStudentName');
@@ -857,23 +593,74 @@
         const modalStudentDob = document.getElementById('modalStudentDob');
         const modalStudentPhone = document.getElementById('modalStudentPhone');
 
+        // รับอ้างอิงถึง input fields ของคะแนนใน Modal
+        const scoreInputFields = {};
+        months.forEach(month => {
+            // Mapping Thai month names to English prefixes for input IDs
+            const monthPrefixMap = {
+                "พฤษภาคม": "May", "มิถุนายน": "Jun", "กรกฎาคม": "Jul",
+                "สิงหาคม": "Aug", "กันยายน": "Sep", "ตุลาคม": "Oct",
+                "พฤศจิกายน": "Nov", "ธันวาคม": "Dec", "มกราคม": "Jan",
+                "กุมภาพันธ์": "Feb", "มีนาคม": "Mar"
+            };
+            const englishPrefix = monthPrefixMap[month];
+            scoreInputFields[month] = document.getElementById(`score${englishPrefix}`);
+        });
+
+        const saveScoresBtn = document.getElementById('saveScoresBtn');
+        const cancelScoresBtn = document.getElementById('cancelScoresBtn');
+        const currentDateTimeSpan = document.getElementById('currentDateTime'); // รับอ้างอิงถึง span สำหรับวันที่/เวลา
+        
+        // Elements for password verification
+        const adminPasswordInput = document.getElementById('adminPasswordInput');
+        const passwordErrorMessage = document.getElementById('passwordErrorMessage');
+        const ADMIN_PASSWORD = "301"; // Define the admin password
+
+
+        // รับอ้างอิงถึงองค์ประกอบตารางและปุ่มสลับ
+        const studentListTableContainer = document.getElementById('studentListTableContainer');
+        const scoreTableContainer = document.getElementById('scoreTableContainer');
+        const studentListTableBody = document.getElementById('studentListTableBody');
+        const scoreTableBody = document.getElementById('scoreTableBody');
+        const showStudentListBtn = document.getElementById('showStudentListBtn');
+        const showStudentScoresBtn = document.getElementById('showStudentScoresBtn');
+
         // ฟังก์ชันสำหรับเปิด Modal
         function openModal(studentId) {
-            const student = studentDetails[studentId]; // ดึงข้อมูลนักเรียนจาก object
+            const student = studentsData.find(s => s.id === studentId); // ค้นหานักเรียนจาก array
             if (student) {
-                // ใส่ข้อมูลลงใน Modal
+                // Populate student details
                 modalStudentName.textContent = `ข้อมูลนักเรียน: ${student.name}`;
-                modalStudentId.textContent = studentId;
+                modalStudentId.textContent = student.id;
                 modalStudentGrade.textContent = student.grade;
                 modalStudentClass.textContent = student.class;
                 modalStudentStatus.textContent = student.status;
                 modalStudentDob.textContent = student.dob;
                 modalStudentPhone.textContent = student.phone;
 
-                modalOverlay.style.display = 'flex'; // แสดง Modal
+                // Populate monthly scores in modal input fields
+                const scores = studentScores[studentId]; // Get current scores (from localStorage)
+                if (scores) {
+                    months.forEach(monthKey => {
+                        const inputElement = scoreInputFields[monthKey];
+                        if (inputElement) {
+                            inputElement.value = scores[monthKey];
+                        }
+                    });
+                }
+
+                // Display current date and time
+                const now = new Date();
+                currentDateTimeSpan.textContent = `(อัปเดตล่าสุด: ${now.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' })})`;
+
+                // Clear previous password error message and input
+                adminPasswordInput.value = '';
+                passwordErrorMessage.textContent = '';
+
+                modalOverlay.dataset.currentStudentId = studentId; // Store current student ID in modal for saving
+                modalOverlay.style.display = 'flex';
             } else {
                 console.error('Student data not found for ID:', studentId);
-                // Optionally, display a message to the user that data is not available
                 modalStudentName.textContent = `ข้อมูลนักเรียน: ไม่พบข้อมูล`;
                 modalStudentId.textContent = studentId;
                 modalStudentGrade.textContent = "-";
@@ -887,27 +674,142 @@
 
         // ฟังก์ชันสำหรับปิด Modal
         function closeModal() {
-            modalOverlay.style.display = 'none'; // ซ่อน Modal
+            modalOverlay.style.display = 'none';
+            delete modalOverlay.dataset.currentStudentId; // Clear stored student ID
         }
 
-        // เพิ่ม Event Listener ให้กับปุ่ม 'ดูรายละเอียด' แต่ละปุ่ม
-        detailButtons.forEach(button => {
-            button.addEventListener('click', (event) => {
-                const studentId = event.target.dataset.studentId; // ดึงค่า data-student-id
-                openModal(studentId);
+        // ฟังก์ชันสำหรับบันทึกคะแนนรายเดือนลง Local Storage
+        function saveMonthlyScores() {
+            const enteredPassword = adminPasswordInput.value;
+            if (enteredPassword !== ADMIN_PASSWORD) {
+                passwordErrorMessage.textContent = "รหัสผ่านไม่ถูกต้อง! โปรดลองอีกครั้ง";
+                return; // Stop the save process
+            } else {
+                passwordErrorMessage.textContent = ""; // Clear error if password is correct
+            }
+
+            const studentIdToSave = modalOverlay.dataset.currentStudentId;
+            if (!studentIdToSave || !studentScores[studentIdToSave]) {
+                console.error("No student ID found for saving scores or student data missing.");
+                return;
+            }
+
+            const currentStudentScores = studentScores[studentIdToSave];
+            months.forEach(month => {
+                const inputElement = scoreInputFields[month];
+                if (inputElement) {
+                    const scoreValue = parseInt(inputElement.value) || 0;
+                    currentStudentScores[month] = scoreValue; // Update local data
+                }
+            });
+
+            // Save the entire studentScores object to localStorage
+            localStorage.setItem('studentMonthlyScores_room3_1', JSON.stringify(studentScores));
+            console.log(`Scores for ${studentIdToSave} saved to localStorage.`);
+
+            renderStudentScores(); // Re-render the score table to show updated scores
+            closeModal(); // Close the modal after saving
+        }
+
+
+        // ฟังก์ชันสำหรับสร้างและแสดงตารางรายชื่อนักเรียน
+        function renderStudentList() {
+            studentListTableBody.innerHTML = ''; // Clear old data
+            let rowNum = 1;
+            studentsData.forEach(student => {
+                const row = studentListTableBody.insertRow();
+                row.innerHTML = `
+                    <td>${rowNum++}</td>
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.status}</td>
+                    <td><button class="details-btn" data-student-id="${student.id}">ดูรายละเอียด</button></td>
+                `;
+            });
+            // Re-attach Event Listeners for "ดูรายละเอียด" buttons after re-rendering
+            document.querySelectorAll('#studentListTableBody .details-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const studentId = event.target.dataset.studentId;
+                    openModal(studentId);
+                });
+            });
+        }
+
+        // ฟังก์ชันสำหรับสร้างและแสดงตารางคะแนนนักเรียน
+        function renderStudentScores() {
+            scoreTableBody.innerHTML = ''; // Clear old data
+
+            // Load latest scores from localStorage before rendering
+            loadScoresFromLocalStorage();
+
+            let rowNum = 1;
+            studentsData.forEach(student => {
+                const scores = studentScores[student.id] || {}; // Use updated local data
+                let totalScore = 0;
+                months.forEach(month => {
+                    totalScore += (scores[month] || 0);
+                });
+
+                const row = scoreTableBody.insertRow();
+                row.innerHTML = `
+                    <td>${rowNum++}</td>
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${scores["พฤษภาคม"] || '-'}</td>
+                    <td>${scores["มิถุนายน"] || '-'}</td>
+                    <td>${scores["กรกฎาคม"] || '-'}</td>
+                    <td>${scores["สิงหาคม"] || '-'}</td>
+                    <td>${scores["กันยายน"] || '-'}</td>
+                    <td>${scores["ตุลาคม"] || '-'}</td>
+                    <td>${scores["พฤศจิกายน"] || '-'}</td>
+                    <td>${scores["ธันวาคม"] || '-'}</td>
+                    <td>${scores["มกราคม"] || '-'}</td>
+                    <td>${scores["กุมภาพันธ์"] || '-'}</td>
+                    <td>${scores["มีนาคม"] || '-'}</td>
+                    <td>${totalScore}</td>
+                `;
+            });
+        }
+
+        // ฟังก์ชันสำหรับสลับการแสดงผลตาราง
+        function displayTable(tableType) {
+            if (tableType === 'list') {
+                studentListTableContainer.style.display = 'block';
+                scoreTableContainer.style.display = 'none';
+                showStudentListBtn.classList.add('active');
+                showStudentScoresBtn.classList.remove('active');
+                renderStudentList(); // Render student list table
+            } else if (tableType === 'score') {
+                studentListTableContainer.style.display = 'none'; // Hide student list
+                scoreTableContainer.style.display = 'block'; // Show score table
+                showStudentListBtn.classList.remove('active');
+                showStudentScoresBtn.classList.add('active');
+                renderStudentScores(); // Render student scores table (will load from localStorage)
+            }
+        }
+
+        // เมื่อหน้าเว็บโหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', () => {
+            displayTable('list'); // แสดงตารางรายชื่อนักเรียนเป็นค่าเริ่มต้น
+
+            // เพิ่ม Event Listener ให้กับปุ่มสลับตาราง
+            showStudentListBtn.addEventListener('click', () => displayTable('list'));
+            showStudentScoresBtn.addEventListener('click', () => displayTable('score'));
+
+            // เพิ่ม Event Listener ให้กับปุ่มปิด Modal
+            closeButton.addEventListener('click', closeModal);
+            cancelScoresBtn.addEventListener('click', closeModal); // ปุ่มยกเลิกก็ปิด Modal
+
+            // เพิ่ม Event Listener ให้กับปุ่มบันทึกคะแนนใน Modal
+            saveScoresBtn.addEventListener('click', saveMonthlyScores);
+
+            // ปิด Modal เมื่อคลิกนอก Modal (บนพื้นหลังทึบแสง)
+            window.addEventListener('click', (event) => {
+                if (event.target == modalOverlay) {
+                    closeModal();
+                }
             });
         });
-
-        // เพิ่ม Event Listener ให้กับปุ่มปิด Modal
-        closeButton.addEventListener('click', closeModal);
-
-        // ปิด Modal เมื่อคลิกนอก Modal (บนพื้นหลังทึบแสง)
-        window.addEventListener('click', (event) => {
-            if (event.target == modalOverlay) {
-                closeModal();
-            }
-        });
     </script>
-
 </body>
 </html>
